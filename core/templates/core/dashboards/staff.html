@@ -1,0 +1,54 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Staff Dashboard - MIU Store{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h2>Staff Dashboard</h2>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card p-3 dashboard-card" style="border-left-color: #dc3545;">
+            <h6 class="text-muted">Pending Orders</h6>
+            <h3>{{ pending_orders_count }}</h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 dashboard-card" style="border-left-color: #fd7e14;">
+            <h6 class="text-muted">Low Stock Products</h6>
+            <h3>{{ low_stock_products.count }}</h3>
+        </div>
+    </div>
+</div>
+
+<div class="card p-4">
+    <h5 class="mb-3">Recent Orders</h5>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Reference</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in recent_orders %}
+            <tr>
+                <td>{{ order.reference_number }}</td>
+                <td><span class="badge bg-secondary">{{ order.status }}</span></td>
+                <td>UGX {{ order.total_price }}</td>
+                <td>{{ order.created_at|date:"M d, Y" }}</td>
+                <td><a href="#" class="btn btn-sm btn-primary">Update</a></td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">No orders found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

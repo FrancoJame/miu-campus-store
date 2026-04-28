@@ -1,0 +1,25 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Delete Product - MIU Store{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h3 class="text-danger mb-4">Confirm Deactivation</h3>
+            <p>Are you sure you want to deactivate the product <strong>{{ product.name }}</strong> (ID: {{ product.product_id }})?</p>
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                Deactivating a product will remove it from the store, but it will remain in order history records.
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-danger">Confirm Deactivation</button>
+                    <a href="{% url 'manage_products' %}" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

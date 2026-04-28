@@ -1,0 +1,73 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Shop - MIU Store{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card p-3 shadow-sm">
+            <h5>Categories</h5>
+            <div class="list-group list-group-flush">
+                <a href="{% url 'product_list' %}" class="list-group-item list-group-item-action {% if not request.GET.category %}active{% endif %}">All</a>
+                {% for cat in categories %}
+                <a href="?category={{ cat.id }}" class="list-group-item list-group-item-action {% if request.GET.category == cat.id|stringformat:'s' %}active{% endif %}">{{ cat.name }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        <form class="mb-4" method="get">
+            <div class="input-group">
+                <input type="text" name="q" class="form-control" placeholder="Search products..." value="{{ request.GET.q|default:'' }}">
+                <button class="btn btn-primary" type="submit">Search</button>
+            </div>
+        </form>
+
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for product in products %}
+            <div class="col">
+                <div class="card h-100 shadow-sm border-0">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 180px; object-fit: cover;">
+                    {% else %}
+                        <div class="bg-light text-center py-5" style="height: 180px;">
+                            <i class="text-muted">No Image</i>
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h6 class="card-title mb-1 text-truncate" style="max-width: 150px;">{{ product.name }}</h6>
+                            <span class="badge bg-light text-primary border border-primary">UGX {{ product.price }}</span>
+                        </div>
+                        <p class="card-text small text-muted mb-2">{{ product.category.name }}</p>
+                        <p class="card-text small text-truncate">{{ product.description }}</p>
+                        
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            {% if product.stock_quantity > 0 %}
+                                <span class="badge bg-success">In Stock ({{ product.stock_quantity }})</span>
+                            {% else %}
+                                <span class="badge bg-danger">Out of Stock</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white border-top-0 d-grid gap-2">
+                        <a href="#" class="btn btn-sm btn-outline-secondary">Details</a>
+                        {% if product.stock_quantity > 0 %}
+                            <form action="{% url 'add_to_cart' product.id %}" method="post" class="d-grid">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-primary">Add to Cart</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <p class="text-muted">No products found matching your criteria.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

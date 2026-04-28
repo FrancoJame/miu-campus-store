@@ -1,0 +1,19 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Access Denied - MIU Store{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 text-center">
+        <div class="card p-5 shadow-sm">
+            <h1 class="display-1 text-danger"><i class="bi bi-shield-lock"></i></h1>
+            <h2 class="mt-4">Access Denied</h2>
+            <p class="lead text-muted">You do not have permission to view this page. If you believe this is an error, please contact your administrator.</p>
+            <div class="mt-4">
+                <a href="{% url 'dashboard' %}" class="btn btn-primary">Go to My Dashboard</a>
+                <a href="{% url 'home' %}" class="btn btn-outline-secondary ms-2">Back to Home</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

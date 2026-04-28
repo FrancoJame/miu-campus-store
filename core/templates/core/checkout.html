@@ -1,0 +1,86 @@
+{% extends 'core/base.html' %}
+{% load django_bootstrap5 %}
+
+{% block title %}Checkout - MIU Store{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Checkout</h2>
+
+<div class="row">
+    <div class="col-md-7">
+        <div class="card p-4">
+            <h5 class="mb-4">Delivery & Payment</h5>
+            <form method="post">
+                {% csrf_token %}
+                {% bootstrap_field form.delivery_address %}
+                {% bootstrap_field form.payment_method %}
+                
+                <div id="card-details" style="display: none;" class="mt-3">
+                    <div class="card p-3 mb-3 bg-light border">
+                        <h6 class="mb-3"><i class="bi bi-credit-card me-2"></i>Card Information</h6>
+                        {% bootstrap_field form.card_name %}
+                        {% bootstrap_field form.card_number %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% bootstrap_field form.card_expiry %}
+                            </div>
+                            <div class="col-md-6">
+                                {% bootstrap_field form.card_cvv %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg w-100">Place Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="col-md-5">
+        <div class="card p-4">
+            <h5 class="mb-3">Items in Order</h5>
+            <div class="mb-3">
+                {% for item in items %}
+                <div class="d-flex justify-content-between mb-2">
+                    <span>{{ item.product.name }} (x{{ item.quantity }})</span>
+                    <span>UGX {{ item.line_total }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between mb-2">
+                <span class="fw-bold">Order Total</span>
+                <span class="fw-bold text-primary">UGX {{ total }}</span>
+            </div>
+            <div class="alert alert-info mt-3 py-2 small">
+                <i class="bi bi-info-circle me-2"></i>
+                Please review your details before placing the order.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const paymentMethodSelect = document.querySelector('select[name="payment_method"]');
+        const cardDetailsDiv = document.getElementById('card-details');
+        
+        function toggleCardFields() {
+            if (paymentMethodSelect.value === 'CARD') {
+                cardDetailsDiv.style.display = 'block';
+            } else {
+                cardDetailsDiv.style.display = 'none';
+            }
+        }
+        
+        if (paymentMethodSelect) {
+            paymentMethodSelect.addEventListener('change', toggleCardFields);
+            toggleCardFields(); // Initial check
+        }
+    });
+</script>
+{% endblock %}

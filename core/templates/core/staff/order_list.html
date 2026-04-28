@@ -1,0 +1,78 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Manage Orders - MIU Store{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Order Management</h2>
+    <div class="dropdown">
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            Filter by Status
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url 'manage_orders' %}">All</a></li>
+            {% for status_val, status_name in statuses %}
+            <li><a class="dropdown-item" href="?status={{ status_val }}">{{ status_name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="card p-4">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Reference</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.reference_number }}</td>
+                <td>{{ order.user.get_full_name }}</td>
+                <td>{{ order.created_at|date:"M d, Y H:i" }}</td>
+                <td>UGX {{ order.total_price }}</td>
+                <td>
+                    <span class="badge {% if order.status == 'PENDING' %}bg-warning text-dark{% elif order.status == 'DELIVERED' %}bg-success{% elif order.status == 'CANCELLED' %}bg-danger{% else %}bg-primary{% endif %}">
+                        {{ order.get_status_display }}
+                    </span>
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
+                            Update Status
+                        </button>
+                        <ul class="dropdown-menu">
+                            {% for status_val, status_name in statuses %}
+                            <li>
+                                <form action="{% url 'order_update_status' order.pk %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="status" value="{{ status_val }}">
+                                    <button type="submit" class="dropdown-item">{{ status_name }}</button>
+                                </form>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% if user.is_manager_user and order.status != 'CANCELLED' %}
+                    <form action="{% url 'order_cancel' order.pk %}" method="post" class="d-inline ms-1" onsubmit="return confirm('Are you sure you want to cancel this order? Stock will be reversed.');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Cancel</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">No orders found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

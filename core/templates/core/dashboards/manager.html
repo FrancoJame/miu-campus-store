@@ -1,0 +1,89 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Manager Dashboard - MIU Store{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Manager Dashboard</h2>
+    <div class="btn-group">
+        <a href="{% url 'manage_products' %}" class="btn btn-outline-primary">Manage Products</a>
+        <a href="{% url 'manage_orders' %}" class="btn btn-outline-primary">Manage Orders</a>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="card p-3 dashboard-card">
+            <h6 class="text-muted">Total Products</h6>
+            <h3>{{ total_products }}</h3>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3 dashboard-card" style="border-left-color: #28a745;">
+            <h6 class="text-muted">Total Revenue</h6>
+            <h3>UGX {{ total_revenue }}</h3>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3 dashboard-card" style="border-left-color: #ffc107;">
+            <h6 class="text-muted">Active Categories</h6>
+            <h3>{{ orders_by_status.count }}</h3>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card p-4 h-100">
+            <h5 class="mb-3">Orders by Status</h5>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in orders_by_status %}
+                        <tr>
+                            <td>{{ item.status }}</td>
+                            <td>{{ item.count }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="2" class="text-center">No orders found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card p-4 h-100">
+            <h5 class="mb-3">Top 5 Best-Selling Products</h5>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Sold</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in top_products %}
+                    <tr>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.total_sold|default:0 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2" class="text-center">No sales data</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

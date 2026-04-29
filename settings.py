@@ -26,10 +26,13 @@ DEBUG = False
 ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = [
     'https://miu-campus-store.up.railway.app',
-    'https://*.up.railway.app'
+    'https://web-production-1000a.up.railway.app',
+    'https://*.up.railway.app',
+    'https://*.railway.app'
 ]
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 USE_X_FORWARDED_HOST = True
+CSRF_USE_SESSIONS = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
